@@ -114,6 +114,7 @@ object Http4sPlugin extends AutoPlugin {
           "src/main/scala/org/http4s/play/Parser.scala",
           "src/main/scala/org/http4s/util/UrlCoding.scala",
           "src/test/scala/org/http4s/Http4sSpec.scala",
+          "src/test/scala/org/http4s/DecodeSpec.scala",
           "src/test/scala/org/http4s/UriSpec.scala",
           "src/test/scala/org/http4s/dsl/PathSpec.scala",
           "src/test/scala/org/http4s/testing/ErrorReporting.scala",
