@@ -17,6 +17,7 @@
 package org.http4s
 
 import cats._
+import cats.data.ValidatedNel
 import cats.syntax.all._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop._
@@ -36,8 +37,11 @@ object QueryParamCodecLaws extends Laws {
           .compose(QueryParamEncoder[T].encode)(value) === value.validNel
       },
       "decode . emap(Right) . encode == successNel" -> forAll { (value: T) =>
-        (QueryParamDecoder[T].emap((t: T) => t.asRight[ParseFailure]).decode _)
-          .compose(QueryParamEncoder[T].encode)(value) === value.validNel
+        val actual = (QueryParamDecoder[T].emap((t: T) => t.asRight[ParseFailure]).decode _)
+          .compose(QueryParamEncoder[T].encode)(value)
+        val expected: ValidatedNel[ParseFailure, T] = value.validNel
+        munit.Assertions.assertEquals(actual, expected)
+        actual === expected
       },
       "decode . emap(Left) . encode == failedNel" -> forAll { (value: T) =>
         (QueryParamDecoder[T].emap(_ => parseFailure.asLeft[T]).decode _)
