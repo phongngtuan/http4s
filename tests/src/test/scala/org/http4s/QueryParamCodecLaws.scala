@@ -33,8 +33,11 @@ object QueryParamCodecLaws extends Laws {
     new SimpleRuleSet(
       "QueryParamCodec",
       "decode . encode == successNel" -> forAll { (value: T) =>
-        (QueryParamDecoder[T].decode _)
-          .compose(QueryParamEncoder[T].encode)(value) === value.validNel
+        val actual = (QueryParamDecoder[T].decode _)
+          .compose(QueryParamEncoder[T].encode)(value)
+        val expected: ValidatedNel[ParseFailure, T] = value.validNel
+        munit.Assertions.assertEquals(actual, expected)
+        actual === expected
       },
       "decode . emap(Right) . encode == successNel" -> forAll { (value: T) =>
         val actual = (QueryParamDecoder[T].emap((t: T) => t.asRight[ParseFailure]).decode _)
@@ -48,8 +51,11 @@ object QueryParamCodecLaws extends Laws {
           .compose(QueryParamEncoder[T].encode)(value) === parseFailure.invalidNel
       },
       "decode . emapValidatedNel(ValidNel) . encode == successNel" -> forAll { (value: T) =>
-        (QueryParamDecoder[T].emapValidatedNel((t: T) => t.validNel[ParseFailure]).decode _)
-          .compose(QueryParamEncoder[T].encode)(value) === value.validNel
+        val actual = (QueryParamDecoder[T].emapValidatedNel((t: T) => t.validNel[ParseFailure]).decode _)
+          .compose(QueryParamEncoder[T].encode)(value)
+        val expected: ValidatedNel[ParseFailure, T] =  value.validNel
+        munit.Assertions.assertEquals(actual, expected)
+        actual === expected
       },
       "decode . emapValidatedNel(InvalidNel) . encode == failedNel" -> forAll { (value: T) =>
         (QueryParamDecoder[T].emapValidatedNel(_ => parseFailure.invalidNel[T]).decode _)
