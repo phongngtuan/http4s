@@ -30,6 +30,7 @@ import org.scalacheck.Arbitrary.{arbInstant => _, arbLocalDate => _, arbZonedDat
 import org.scalacheck.Prop._
 
 class QueryParamCodecSuite extends Http4sSuite with QueryParamCodecInstances {
+  override def scalaCheckInitialSeed = "rS0fcc_1Wo96m09wXZinaJ3sOUx5_bZ47DXSr6yUi4E="
   checkAll("Boolean QueryParamCodec", QueryParamCodecLaws[Boolean])
   checkAll("Double QueryParamCodec", QueryParamCodecLaws[Double])
   checkAll("Float QueryParamCodec", QueryParamCodecLaws[Float])
